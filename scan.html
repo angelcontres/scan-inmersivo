@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Angel — Animación al escanear</title>
+  <style>
+    :root{--bg:#071027;--panel:#07172a;--accent:#FFD93D;--muted:#b9c6d0}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071027 0%, #08142a 100%);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#fff}
+    .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:18px}
+    .card{background:rgba(255,255,255,0.03);padding:18px;border-radius:12px;max-width:720px;width:100%;text-align:center}
+    h1{margin:0;font-size:1.4rem;color:var(--accent)}
+    p{color:var(--muted);margin:8px 0 0}
+    /* Animación principal: un panel que "crece" + partículas sutiles */
+    .stage{position:relative;margin-top:18px;display:flex;align-items:center;justify-content:center;height:320px}
+    .panel{width:260px;height:160px;border-radius:12px;background:linear-gradient(180deg,#0f2740,#071a2b);box-shadow:0 12px 30px rgba(2,6,23,0.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transform:scale(0.8);opacity:0;transition:transform .7s cubic-bezier(.2,.9,.3,1),opacity .5s}
+    .panel.show{transform:scale(1);opacity:1}
+    .logo{width:64px;height:64px;border-radius:10px;background:var(--accent);display:inline-block}
+    .title{font-weight:700}
+    .pulse{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pop 1.6s infinite}
+    @keyframes pop{0%{transform:scale(0.6);opacity:0.8}50%{transform:scale(1.4);opacity:1}100%{transform:scale(0.6);opacity:0.8}}
+
+    /* Partículas (sutiles) */
+    .particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(255,217,61,0.25);filter:blur(6px);opacity:0}
+    /* reduced motion respect */
+    @media (prefers-reduced-motion: reduce){
+      .panel{transition:none;animation:none}
+      .pulse{animation:none}
+    }
+
+    /* Botón grande y accesible */
+    .cta{margin-top:12px;background:var(--accent);color:#07203b;padding:12px 18px;border-radius:10px;border:none;font-weight:800;font-size:1rem}
+    .small{font-size:0.9rem;color:var(--muted);margin-top:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <div class="card" role="article" aria-live="polite">
+      <h1>¡Gracias por escanear! 👋</h1>
+      <p class="small">Aquí tienes una vista rápida interactiva de mi portafolio.</p>
+
+      <div class="stage" aria-hidden="false">
+        <div class="particles" id="particles" aria-hidden="true"></div>
+        <div class="panel" id="panel" role="status" aria-live="polite">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="title">Angel Alejandro</div>
+          <div class="small">Portafolio 3D • AR • Música</div>
+        </div>
+      </div>
+
+      <button id="enterBtn" class="cta">Ver portafolio completo</button>
+      <div class="small">Si tu dispositivo lo permite, pulsa para abrir la experiencia WebAR (si la tienes).</div>
+    </div>
+  </div>
+
+  <script>
+    // Pequeña animación accesible al cargar
+    const panel = document.getElementById('panel');
+    const particles = document.getElementById('particles');
+    const enterBtn = document.getElementById('enterBtn');
+
+    function createParticles(n=14){
+      const w = window.innerWidth, h = window.innerHeight;
+      for(let i=0;i<n;i++){
+        const d = document.createElement('div');
+        d.className='dot';
+        const left = Math.random()*100;
+        const top = Math.random()*100;
+        d.style.left = left + '%';
+        d.style.top = top + '%';
+        d.style.opacity = 0.02 + Math.random()*0.6;
+        const size = 4 + Math.random()*12;
+        d.style.width = size+'px';
+        d.style.height = size+'px';
+        particles.appendChild(d);
+
+        // pequeña animación de entrada
+        requestAnimationFrame(()=> {
+          d.style.transition = `transform ${1.5 + Math.random()*2}s ease, opacity ${1.5 + Math.random()*2}s ease`;
+          const tx = (Math.random()-0.5)*80;
+          const ty = (Math.random()-0.5)*40;
+          d.style.transform = `translate(${tx}px,${ty}px)`;
+          d.style.opacity = 0.12 + Math.random()*0.5;
+        });
+      }
+    }
+
+    // Respeta prefers-reduced-motion
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.addEventListener('load', ()=>{
+      if(!prefersReduced){
+        createParticles(18);
+        setTimeout(()=>panel.classList.add('show'), 180);
+      } else {
+        panel.classList.add('show'); // directo
+      }
+    });
+
+    enterBtn.addEventListener('click', ()=>{
+      // Si tienes una página AR en GitHub Pages o similar, redirígete
+      // Cambia la URL por la tuya real que contiene la experiencia WebAR/3D
+      const arUrl = 'https://TU_USUARIO.github.io/tu-repo/'; 
+      window.location.href = arUrl;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AR con QR - Angel Villon</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      .ui {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 10px 15px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        font-family: Arial, sans-serif;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ui">📸 Escanea tu marcador QR</div>
+
+    <!-- Escena AR.js -->
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+      vr-mode-ui="enabled: false"
+      renderer="logarithmicDepthBuffer: true;"
+    >
+      <!-- Cámara AR -->
+      <a-entity camera></a-entity>
+
+      <!-- Marcador usando tu .patt -->
+      <a-marker type="pattern" url="assets/markers/pattern-qr_logo_diseño.patt">
+        <!-- Modelo 3D animado -->
+        <a-entity
+          gltf-model="url(assets/models/pikachu.glb)"
+          scale="0.3 0.3 0.3"
+          position="0 0 0"
+          rotation="0 0 0"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear"
+        >
+        </a-entity>
+      </a-marker>
+
+      <!-- Necesario para que todo cargue -->
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>
